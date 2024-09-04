@@ -24,7 +24,7 @@ class SignInScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text('Sign In', style: Theme.of(context).textTheme.bodyLarge),
+            Text('Sign In', style: Theme.of(context).textTheme.displayLarge),
           ],
         ),
       ),

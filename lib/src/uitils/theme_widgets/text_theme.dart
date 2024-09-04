@@ -5,20 +5,16 @@ import 'package:google_fonts/google_fonts.dart';
 
 class MyTextTheme {
   static TextTheme LightTextTheme = TextTheme(
-    displayLarge: TextStyle(
+    displayLarge: const TextStyle(
       fontWeight: FontWeight.bold,
       color: Colors.black,
-      fontSize: 20,
+      fontSize: 30,
     ),
     bodyMedium: GoogleFonts.roboto(),
   );
 
   static TextTheme DarkTextTheme = TextTheme(
-      displayLarge: GoogleFonts.roboto(),
-      // displayLarge: TextStyle(
-      //   fontWeight: FontWeight.bold,
-      //   color: Colors.white,
-      //   fontSize: 25,
-      // ),
-      bodyMedium: TextStyle(color: Colors.white));
+      displayLarge:
+          GoogleFonts.roboto(fontSize: 30, fontWeight: FontWeight.bold),
+      bodyMedium: GoogleFonts.roboto(color: Colors.white38));
 }

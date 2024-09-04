@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:transport_app_iub/src/constants/colors_string.dart';
 import 'package:transport_app_iub/src/constants/text_strings.dart';
 import 'package:transport_app_iub/src/features/authentication/screens/sing_in_screen.dart';
@@ -48,6 +49,7 @@ class NewUserScreen extends StatelessWidget {
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   wellcomeText,
@@ -57,7 +59,7 @@ class NewUserScreen extends StatelessWidget {
                   height: 10,
                 ),
                 Text(
-                  DecriptionText,
+                  decriptionText,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 const SizedBox(
@@ -68,7 +70,7 @@ class NewUserScreen extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => SignInScreen()));
+                            builder: (context) => const SignInScreen()));
                   },
                   child: Container(
                     width: 90,
@@ -96,10 +98,14 @@ class NewUserScreen extends StatelessWidget {
                             left: Radius.circular(20),
                             right: Radius.circular(20))),
                     child: Center(
-                        child: Text('Sign In',
-                            style: Theme.of(context).textTheme.bodyMedium)),
+                      child: Text('Sign In',
+                          style: GoogleFonts.roboto(
+                              color: Colors.black,
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold)),
+                    ),
                   ),
-                ),
+                )
               ],
             ),
           ),
