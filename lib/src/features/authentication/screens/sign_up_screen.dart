@@ -4,8 +4,8 @@ import 'package:transport_app_iub/src/common_widgets/text_field.dart';
 import 'package:transport_app_iub/src/constants/colors_string.dart';
 import 'package:transport_app_iub/src/features/authentication/screens/home_screen.dart';
 
-class SignInScreen extends StatelessWidget {
-  const SignInScreen({super.key});
+class SignUpScreen extends StatelessWidget {
+  const SignUpScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,30 +29,29 @@ class SignInScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Sign In', style: Theme.of(context).textTheme.displayLarge),
-              Text('Sign in to your Account',
+              Text('Sign Up', style: Theme.of(context).textTheme.displayLarge),
+              Text('Creat your Account',
                   style: Theme.of(context).textTheme.bodyMedium),
+              const SizedBox(
+                height: 20,
+              ),
+              myTextField(const Icon(Icons.person), 'Enter Name', false),
               const SizedBox(
                 height: 20,
               ),
               myTextField(const Icon(Icons.email), 'Enter Email', false),
               const SizedBox(
-                height: 30,
+                height: 20,
               ),
               myTextField(const Icon(Icons.password), 'Enter Password', true),
               const SizedBox(
-                height: 5,
+                height: 20,
               ),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text('Forget Password?'),
-                ],
-              ),
+              myTextField(const Icon(Icons.password), 'Confirm Password', true),
               const SizedBox(
                 height: 30,
               ),
-              myButton(context, 300, 40, 'Sign In', const HomeScreen())
+              myButton(context, 300, 40, 'Sign Up', const HomeScreen())
             ],
           ),
         ),
