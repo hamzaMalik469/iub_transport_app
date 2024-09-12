@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "861499216098",
+    "project_id": "iub-transport-app",
+    "storage_bucket": "iub-transport-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:861499216098:android:c225ca6962b00982b2cebb",
+        "android_client_info": {
+          "package_name": "com.example.transport_app_iub"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASUtTe3r2spNGc_3SPVGjF1n_oXYhvDnY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
