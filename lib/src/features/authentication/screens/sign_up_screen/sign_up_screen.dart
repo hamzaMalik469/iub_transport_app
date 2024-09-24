@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:transport_app_iub/src/common_widgets/custon_container/container_common_widgets.dart';
+import 'package:transport_app_iub/src/common_widgets/custom_container/container_common_widgets.dart';
 import 'package:transport_app_iub/src/features/authentication/screens/sign_up_screen/sign_up_form.dart';
 import 'package:transport_app_iub/src/features/authentication/screens/sign_up_screen/header.dart';
 

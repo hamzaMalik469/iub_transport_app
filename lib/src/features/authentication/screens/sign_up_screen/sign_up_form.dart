@@ -2,11 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:transport_app_iub/src/common_widgets/button.dart';
-import 'package:transport_app_iub/src/common_widgets/custon_container/custom_dialog_box.dart';
+import 'package:transport_app_iub/src/common_widgets/custom_container/custom_dialog_box.dart';
 import 'package:transport_app_iub/src/common_widgets/text_field.dart';
 import 'package:transport_app_iub/src/constants/text_strings.dart';
 import 'package:transport_app_iub/src/features/authentication/firebase_authentication/firebase_service.dart';
-import 'package:transport_app_iub/src/features/authentication/screens/home_screen.dart';
+import 'package:transport_app_iub/src/features/home_screens/home_screen.dart';
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({super.key});

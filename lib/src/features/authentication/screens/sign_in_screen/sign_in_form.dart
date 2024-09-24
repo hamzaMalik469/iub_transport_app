@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:transport_app_iub/src/common_widgets/button.dart';
-import 'package:transport_app_iub/src/common_widgets/custon_container/custom_dialog_box.dart';
+import 'package:transport_app_iub/src/common_widgets/custom_container/custom_dialog_box.dart';
 import 'package:transport_app_iub/src/common_widgets/text_field.dart';
 import 'package:transport_app_iub/src/constants/text_strings.dart';
 import 'package:transport_app_iub/src/features/authentication/firebase_authentication/firebase_service.dart';
-import 'package:transport_app_iub/src/features/authentication/screens/forgetPassword/forget_password_screen.dart';
-import 'package:transport_app_iub/src/features/authentication/screens/home_screen.dart';
+import 'package:transport_app_iub/src/features/authentication/screens/forgetPassword/forget_password_option/forget_password_option.dart';
+import 'package:transport_app_iub/src/features/home_screens/home_screen.dart';
 
 class SignInForm extends StatefulWidget {
   const SignInForm({super.key});
@@ -147,10 +147,9 @@ class _SignUpFormState extends State<SignInForm> {
           // Forget password button
           Row(mainAxisAlignment: MainAxisAlignment.end, children: [
             GestureDetector(
-              onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ForgetPasswordScreen())),
+              onTap: () {
+                forgetPasswordOption(context);
+              },
               child: Text('Forget Password?',
                   style: Theme.of(context)
                       .textTheme

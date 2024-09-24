@@ -1,5 +1,4 @@
 //WellcomeScreen Texts
-import 'package:transport_app_iub/src/features/authentication/screens/forgetPassword/forget_password_screen.dart';
 
 const String wellcomeText = 'Wellcome To IUB Transport';
 const String decriptionText =
