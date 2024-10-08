@@ -43,14 +43,16 @@ class FooterWellcomeScreen extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                       builder: (context) => const SignInScreen())),
-              child: myButton(signIn.toUpperCase())),
+              child: MyButton(
+                text: signIn.toUpperCase(),
+              )),
           const SizedBox(
             height: 10,
           ),
           GestureDetector(
             onTap: () => Navigator.push(context,
                 MaterialPageRoute(builder: (context) => const SignUpScreen())),
-            child: myButton(signUp.toUpperCase()),
+            child: MyButton(text: signUp.toUpperCase()),
           )
         ],
       ),

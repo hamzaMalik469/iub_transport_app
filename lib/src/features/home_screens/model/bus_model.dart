@@ -1,109 +1,59 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class GeoPoint {
-  double latitude;
-  double longitude;
+class Buses {
+  String? driverName;
+  GeoPoint? endingPoint; // Firestore GeoPoint
+  String? plateNumber;
+  String? routeName;
+  GeoPoint? startingPoint; // Firestore GeoPoint
+  List<GeoPoint>? stops; // Firestore GeoPoint
 
-  GeoPoint({
-    required this.latitude,
-    required this.longitude,
+  Buses({
+    this.driverName,
+    this.endingPoint,
+    this.plateNumber,
+    this.routeName,
+    this.startingPoint,
+    this.stops,
   });
 
-  // Method to convert GeoPoint to JSON
+  // Method to convert Firestore data to Buses object
+  fromJson(Map<String, dynamic> json) {
+    driverName = json['Driver Name'];
+    endingPoint = json['Ending point'] != null
+        ? json['Ending point'] as GeoPoint
+        : null; // Handle null for endingPoint
+    plateNumber = json['Plate Number'];
+    routeName = json['Route name'];
+    startingPoint = json['Starting point'] != null
+        ? json['Starting point'] as GeoPoint
+        : null; // Handle null for startingPoint
+
+    if (json['Stops'] != null) {
+      stops = <GeoPoint>[]; // Initialize the list of GeoPoints
+      for (var stop in json['Stops']) {
+        if (stop != null) {
+          stops!.add(stop as GeoPoint); // Firestore GeoPoint
+        }
+      }
+    }
+  }
+
+  // Method to convert Buses object back to JSON (optional, for saving to Firestore)
   Map<String, dynamic> toJson() {
-    return {
-      'latitude': latitude,
-      'longitude': longitude,
-    };
-  }
-
-  // Factory method to create a GeoPoint from JSON
-  factory GeoPoint.fromJson(Map<String, dynamic> json) {
-    return GeoPoint(
-      latitude: json['latitude'],
-      longitude: json['longitude'],
-    );
-  }
-}
-
-class Bus {
-  String driverName;
-  String plateNumber;
-
-  // Constructor
-  Bus({
-    required this.driverName,
-    required this.plateNumber,
-  });
-
-  // Convert Bus object to JSON for storing in Firestore
-  Map<String, dynamic> toJson() {
-    return {
-      'driverName': driverName,
-      'plateNumber': plateNumber,
-    };
-  }
-
-  // Create Bus object from JSON
-  factory Bus.fromJson(Map<String, dynamic> json) {
-    return Bus(
-      driverName: json['driverName'],
-      plateNumber: json['plateNumber'],
-    );
-  }
-
-  // Fetch routes subcollection for this bus
-  Future<List<Route>> getRoutes(String busId) async {
-    CollectionReference routesCollection = FirebaseFirestore.instance
-        .collection('buses')
-        .doc(busId)
-        .collection('routes');
-
-    QuerySnapshot querySnapshot = await routesCollection.get();
-    return querySnapshot.docs
-        .map((doc) => Route.fromJson(doc.data() as Map<String, dynamic>))
-        .toList();
-  }
-
-  // Add route to the subcollection
-  Future<void> addRoute(String busId, Route route) async {
-    CollectionReference routesCollection = FirebaseFirestore.instance
-        .collection('buses')
-        .doc(busId)
-        .collection('routes');
-
-    await routesCollection.add(route.toJson());
-  }
-}
-
-class Route {
-  String routeName;
-  List<GeoPoint> busStops;
-
-  Route({
-    required this.routeName,
-    required this.busStops,
-  });
-
-  // Convert Route object to JSON for Firestore
-  Map<String, dynamic> toJson() {
-    return {
-      'routeName': routeName,
-      'busStops': busStops
-          .map((geoPoint) =>
-              {'latitude': geoPoint.latitude, 'longitude': geoPoint.longitude})
-          .toList(),
-    };
-  }
-
-  // Create Route object from JSON
-  factory Route.fromJson(Map<String, dynamic> json) {
-    return Route(
-      routeName: json['routeName'],
-      busStops: (json['busStops'] as List)
-          .map((data) => GeoPoint(
-              latitude: json['latitude'], longitude: json['longitude']))
-          .toList(),
-    );
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['Driver Name'] = driverName;
+    if (endingPoint != null) {
+      data['Ending Point'] = endingPoint; // Firestore GeoPoint
+    }
+    data['Plate Number'] = plateNumber;
+    data['Route Name'] = routeName;
+    if (startingPoint != null) {
+      data['Starting Point'] = startingPoint; // Firestore GeoPoint
+    }
+    if (stops != null) {
+      data['Stops'] = stops!.map((v) => v).toList(); // Firestore GeoPoint
+    }
+    return data;
   }
 }

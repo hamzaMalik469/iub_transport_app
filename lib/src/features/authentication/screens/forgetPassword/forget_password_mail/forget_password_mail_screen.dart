@@ -46,7 +46,7 @@ class ForgetPasswordScreen extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {},
-                child: myButton('Next'),
+                child: MyButton(text: 'Next'),
               )
             ],
           ),

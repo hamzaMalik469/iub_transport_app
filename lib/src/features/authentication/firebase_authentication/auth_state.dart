@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:transport_app_iub/src/features/home_screens/home_screen.dart';
+import 'package:transport_app_iub/src/features/home_screens/home/home_screen.dart';
 import 'package:transport_app_iub/src/features/authentication/screens/wellcom_screen/wellcome_screen.dart';
 
 class AuthStateChecker extends StatelessWidget {

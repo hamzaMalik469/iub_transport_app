@@ -6,7 +6,7 @@ import 'package:transport_app_iub/src/common_widgets/custom_container/custom_dia
 import 'package:transport_app_iub/src/common_widgets/text_field.dart';
 import 'package:transport_app_iub/src/constants/text_strings.dart';
 import 'package:transport_app_iub/src/features/authentication/firebase_authentication/firebase_service.dart';
-import 'package:transport_app_iub/src/features/home_screens/home_screen.dart';
+import 'package:transport_app_iub/src/features/home_screens/home/home_screen.dart';
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({super.key});
@@ -184,7 +184,8 @@ class _SignUpFormState extends State<SignUpForm> {
           const SizedBox(height: 32),
           // Sign Up Button
           GestureDetector(
-              onTap: signUpWithEmailAndPassword, child: myButton(signUp))
+              onTap: signUpWithEmailAndPassword,
+              child: MyButton(text: signUp.toUpperCase()))
         ],
       ),
     );

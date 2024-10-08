@@ -12,3 +12,6 @@ const String signUpSubtitle = 'Creat your Account';
 // ForgetPasswordScreen Texts
 const String forgetPasswordTitle = 'Forget Password';
 const String forgetPasswordSubtitle = 'Recover your account';
+
+// Google map Api
+const mapApi = 'AIzaSyCKQFjKuRZzX8McNG-5RgwqUu56Kpdgwr4';

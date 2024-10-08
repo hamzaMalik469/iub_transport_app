@@ -6,7 +6,7 @@ import 'package:transport_app_iub/src/common_widgets/text_field.dart';
 import 'package:transport_app_iub/src/constants/text_strings.dart';
 import 'package:transport_app_iub/src/features/authentication/firebase_authentication/firebase_service.dart';
 import 'package:transport_app_iub/src/features/authentication/screens/forgetPassword/forget_password_option/forget_password_option.dart';
-import 'package:transport_app_iub/src/features/home_screens/home_screen.dart';
+import 'package:transport_app_iub/src/features/home_screens/home/home_screen.dart';
 
 class SignInForm extends StatefulWidget {
   const SignInForm({super.key});
@@ -161,7 +161,8 @@ class _SignUpFormState extends State<SignInForm> {
 
           // Sign Up button
           GestureDetector(
-              onTap: signInWithEmailAndPassword, child: myButton(signIn))
+              onTap: signInWithEmailAndPassword,
+              child: MyButton(text: signIn.toUpperCase()))
         ],
       ),
     );
