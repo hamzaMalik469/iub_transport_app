@@ -6,7 +6,7 @@ import 'package:transport_app_iub/src/common_widgets/custom_container/custom_dia
 import 'package:transport_app_iub/src/common_widgets/text_field.dart';
 import 'package:transport_app_iub/src/constants/text_strings.dart';
 import 'package:transport_app_iub/src/features/authentication/firebase_authentication/firebase_service.dart';
-import 'package:transport_app_iub/src/features/home_screens/home/home_screen.dart';
+import 'package:transport_app_iub/src/features/home_screens/home/user_home_screen/home_screen.dart';
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({super.key});
@@ -62,13 +62,15 @@ class _SignUpFormState extends State<SignUpForm> {
             'phone number': phoneNumberController.text,
             'email': emailController.text,
             'signUpTime': Timestamp.now(),
+            'role': 'user',
+            'password': passwordController.text,
           });
           if (!mounted) return; // Check if the widget is still mounted
 
           // Now it is safe to navigate
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => HomeScreen()),
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
           );
 
           ScaffoldMessenger.of(context).showSnackBar(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:transport_app_iub/src/constants/images_strings.dart';
+import 'package:transport_app_iub/src/features/home_screens/home/common_widgets/status_identifier.dart';
 import 'package:transport_app_iub/src/features/home_screens/model/bus_model.dart';
 
 // ignore: must_be_immutable
@@ -20,14 +21,25 @@ class BusTile extends StatelessWidget {
         color: Colors.grey[700],
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              bus.locationEnable == true
+                  ? const StatusIdentifier(
+                      boxColor: Colors.green,
+                      text: 'Online',
+                    )
+                  : const StatusIdentifier(
+                      boxColor: Colors.grey, text: 'offline')
+            ],
+          ),
           ListTile(
             onTap: onTap,
             leading: Image(image: AssetImage(wellcomeScreenImage)),
-            title: Text(bus?.plateNumber ?? 'No Plate Number'),
+            title: Text(bus.plateNumber ?? 'No Plate Number'),
             titleTextStyle: Theme.of(context).textTheme.displayLarge,
-            subtitle: Text(bus?.routeName ?? 'No Route Name'),
+            subtitle: Text(bus.routeName ?? 'No Route Name'),
           ),
         ],
       ),

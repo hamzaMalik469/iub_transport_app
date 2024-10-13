@@ -37,7 +37,7 @@ android {
     defaultConfig {
         applicationId "com.example.transport_app_iub"
         minSdkVersion 23  // Set minimum SDK version to 23 to meet Firebase Auth's requirements
-        targetSdkVersion flutter.compileSdkVersion  // Use the same version as the compile SDK
+        targetSdkVersion 30  // Use the same version as the compile SDK
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }

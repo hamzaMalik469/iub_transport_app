@@ -1,12 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:transport_app_iub/src/common_widgets/button.dart';
 import 'package:transport_app_iub/src/common_widgets/custom_container/custom_dialog_box.dart';
 import 'package:transport_app_iub/src/common_widgets/text_field.dart';
 import 'package:transport_app_iub/src/constants/text_strings.dart';
+import 'package:transport_app_iub/src/features/authentication/firebase_authentication/auth_state.dart';
 import 'package:transport_app_iub/src/features/authentication/firebase_authentication/firebase_service.dart';
 import 'package:transport_app_iub/src/features/authentication/screens/forgetPassword/forget_password_option/forget_password_option.dart';
-import 'package:transport_app_iub/src/features/home_screens/home/home_screen.dart';
+import 'package:transport_app_iub/src/features/home_screens/home/driver_screen/driver_home_screen.dart';
+import 'package:transport_app_iub/src/features/home_screens/home/user_home_screen/home_screen.dart';
 
 class SignInForm extends StatefulWidget {
   const SignInForm({super.key});
@@ -42,12 +46,23 @@ class _SignUpFormState extends State<SignInForm> {
         String password = passwordController.text.trim();
         User? user = await _auth.signInWithEmailAndPassword(email, password);
         if (user != null) {
-          Navigator.pushReplacement(
-              // ignore: use_build_context_synchronously
-              context,
-              MaterialPageRoute(
-                builder: (context) => HomeScreen(),
-              ));
+          DocumentSnapshot userDoc = await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .get();
+
+          if (userDoc.exists) {
+            var role = userDoc['role'];
+            if (role == 'driver') {
+              // Navigate to deriver dashboard
+              Get.to(() => const AuthStateChecker());
+            } else {
+              // Navigate to user dashboard
+              Get.to(() => const HomeScreen());
+            }
+          }
+
+          // ignore: use_build_context_synchronously
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Signed in Successful! ${user.email}')),
           );

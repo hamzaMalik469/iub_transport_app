@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:transport_app_iub/src/features/authentication/firebase_authentication/firebase_service.dart';
-import 'package:transport_app_iub/src/features/home_screens/home/bus_tile.dart';
-import 'package:transport_app_iub/src/features/home_screens/map_screen/map_screen.dart';
+import 'package:transport_app_iub/src/features/home_screens/home/common_widgets/bus_tile.dart';
+import 'package:transport_app_iub/src/features/home_screens/home/user_home_screen/user_map_screen.dart';
 import 'package:transport_app_iub/src/features/home_screens/model/bus_model.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -63,6 +63,13 @@ class HomeScreenState extends State<HomeScreen> {
             },
             child: const Text('Log out'),
           ),
+          IconButton(
+            onPressed: () {
+              setState(() {});
+            },
+            icon: const Icon(Icons.refresh),
+            color: Colors.white,
+          )
         ],
       ),
       body: isLoading
@@ -79,9 +86,13 @@ class HomeScreenState extends State<HomeScreen> {
                   itemCount: busesList.length,
                   itemBuilder: (context, index) {
                     final bus = busesList[index];
+                    final busId = busesList[index].id;
+
                     final source = busesList[index].startingPoint;
                     final destination = busesList[index].endingPoint;
                     final List<GeoPoint>? stops = busesList[index].stops;
+
+                    final locationEnable = busesList[index].locationEnable;
                     return BusTile(
                       bus: bus,
                       onTap: () {
@@ -89,6 +100,8 @@ class HomeScreenState extends State<HomeScreen> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => MapScreen(
+                                      busId: busId,
+                                      locationEnable: locationEnable,
                                       source: destination,
                                       destination: source,
                                       stops: stops,
