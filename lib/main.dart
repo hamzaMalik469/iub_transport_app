@@ -7,6 +7,7 @@ import 'package:transport_app_iub/src/uitils/theme.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(); // Initialize Firebase
+
   runApp(const MyApp());
 }
 

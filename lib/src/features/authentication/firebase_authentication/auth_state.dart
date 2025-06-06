@@ -24,7 +24,6 @@ class AuthStateChecker extends StatelessWidget {
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.active) {
-          var userId = snapshot.data?.uid;
           if (snapshot.hasError) {
             return Center(
               child: Text('An error occurred: ${snapshot.error}'),
@@ -49,8 +48,7 @@ class AuthStateChecker extends StatelessWidget {
                   String? role = roleSnapshot.data;
                   // Navigate based on user role
                   if (role == 'driver') {
-                    return DriverHomeScreen(
-                        userId: userId); // Navigate to driver screen
+                    return const DriverHomeScreen(); // Navigate to driver screen
                   } else if (role == 'user') {
                     return const HomeScreen(); // Navigate to user screen
                   } else {

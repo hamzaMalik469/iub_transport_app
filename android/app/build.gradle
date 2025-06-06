@@ -3,6 +3,7 @@ plugins {
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
     id 'com.google.gms.google-services'
+    
 }
 
 def localProperties = new Properties()
@@ -21,13 +22,13 @@ android {
     compileSdkVersion flutter.compileSdkVersion  // Use Flutter's compile SDK version
     ndkVersion flutter.ndkVersion  // Use Flutter's NDK version
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_11
+    targetCompatibility JavaVersion.VERSION_11
+}
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
     }
 
     sourceSets {
@@ -37,7 +38,7 @@ android {
     defaultConfig {
         applicationId "com.example.transport_app_iub"
         minSdkVersion 23  // Set minimum SDK version to 23 to meet Firebase Auth's requirements
-        targetSdkVersion 30  // Use the same version as the compile SDK
+        targetSdkVersion flutter.compileSdkVersion  // Use the same version as the compile SDK
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
@@ -57,5 +58,5 @@ flutter {
 dependencies {
     implementation platform('com.google.firebase:firebase-bom:33.2.0')  // Firebase BoM
     implementation 'com.google.firebase:firebase-auth'                  // Firebase Authentication
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.7.10'     // Kotlin Standard Library
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.0.20'     // Kotlin Standard Library
 }

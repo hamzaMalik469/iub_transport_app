@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -7,13 +8,12 @@ import 'package:transport_app_iub/src/features/authentication/firebase_authentic
 import 'package:transport_app_iub/src/features/authentication/screens/wellcom_screen/wellcome_screen.dart';
 import 'package:transport_app_iub/src/features/home_screens/home/common_widgets/bus_tile.dart';
 import 'package:transport_app_iub/src/features/home_screens/home/driver_screen/driver_map_screen.dart';
+import 'package:transport_app_iub/src/features/home_screens/home/driver_screen/firebase_services.dart';
 import 'package:transport_app_iub/src/features/home_screens/model/bus_model.dart';
 import 'package:get/get.dart';
 
 class DriverHomeScreen extends StatefulWidget {
-  final String? userId;
-
-  const DriverHomeScreen({Key? key, this.userId}) : super(key: key);
+  const DriverHomeScreen({super.key});
 
   @override
   State<DriverHomeScreen> createState() => _DriverHomeScreenState();
@@ -21,12 +21,11 @@ class DriverHomeScreen extends StatefulWidget {
 
 class _DriverHomeScreenState extends State<DriverHomeScreen> {
   Buses bus = Buses();
-  bool locationEnabled = false;
+  var locationEnabled = false;
   final AuthService _auth = AuthService();
   LatLng currentLocation = const LatLng(0, 0);
   LatLng? busLocation;
   String locationMessage = "";
-
   late GoogleMapController _mapController;
 
   @override
@@ -34,7 +33,17 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     super.initState();
     _getBus();
     _checkLocationServicesAndPermission();
-    _getCurrentLocation();
+    if (bus.locationEnable == true) {}
+  }
+
+  // Get Current user Id
+  Future<String?> getCurrentUserId() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      return user.uid;
+    } else {
+      return null;
+    }
   }
 
   // Check for location permissions and services
@@ -65,30 +74,35 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
       });
       return;
     }
-
-    // If permissions are granted and services are enabled, get current location
-    _getCurrentLocation();
   }
 
-  // Helper function to get document from Firebase
+  // // Helper function to get document from Firebase
   Future<DocumentSnapshot> _getDocument(
       String collection, String? docId) async {
     return FirebaseFirestore.instance.collection(collection).doc(docId).get();
   }
 
-  // Get Bus info from Firebase
+  // // Get Bus info from Firebase
   Future<void> _getBus() async {
     try {
-      DocumentSnapshot userDoc = await _getDocument('users', widget.userId);
+      User? user = FirebaseAuth.instance.currentUser;
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user!.uid)
+          .get();
       if (userDoc.exists) {
         var busId = userDoc['busId'];
-        DocumentSnapshot busDoc = await _getDocument('buses', busId);
+        DocumentSnapshot busDoc = await FirebaseFirestore.instance
+            .collection('buses')
+            .doc(busId)
+            .get();
         if (busDoc.exists) {
           setState(() {
             bus.fromJson(busDoc.data() as Map<String, dynamic>);
+            currentLocation =
+                LatLng(bus.driverLoc!.latitude, bus.driverLoc!.longitude);
             locationEnabled = bus.locationEnable ?? false;
           });
-          if (locationEnabled) _startListeningToLocationChanges();
         }
       }
     } catch (e) {
@@ -96,42 +110,14 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     }
   }
 
-  // Start listening to location changes
-  void _startListeningToLocationChanges() {
-    Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: 10,
-      ),
-    ).listen((Position position) {
-      _updateLocationInFirestore(position);
-      setState(() {
-        busLocation = LatLng(position.latitude, position.longitude);
-      });
-    });
-  }
-
-  // Update the user's location in Firestore
-  Future<void> _updateLocationInFirestore(Position position) async {
-    try {
-      DocumentSnapshot userDoc = await _getDocument('users', widget.userId);
-      if (userDoc.exists) {
-        var busId = userDoc['busId'];
-        await FirebaseFirestore.instance.collection('buses').doc(busId).update({
-          'live location': GeoPoint(position.latitude, position.longitude),
-          'lastUpdated': FieldValue.serverTimestamp(),
-        });
-        print('Location updated: ${position.latitude}, ${position.longitude}');
-      }
-    } catch (e) {
-      print('Error updating location: $e');
-    }
-  }
-
-  // Enable or disable location updates for the driver
+  // // Enable or disable location updates for the driver
   Future<void> _enableDisableLocation(bool update) async {
     try {
-      DocumentSnapshot userDoc = await _getDocument('users', widget.userId);
+      User? user = FirebaseAuth.instance.currentUser;
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user!.uid)
+          .get();
       if (userDoc.exists) {
         var busId = userDoc['busId'];
         await FirebaseFirestore.instance
@@ -143,48 +129,6 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     } catch (e) {
       print('Error updating location enable status: $e');
     }
-  }
-
-  // Get current location
-  // Future<void> _getCurrentLocation() async {
-  //   try {
-  //     Position position = await Geolocator.getCurrentPosition(
-  //       desiredAccuracy: LocationAccuracy.high,
-  //     );
-  //     setState(() {
-  //       currentLocation = LatLng(position.latitude, position.longitude);
-  //       locationMessage = 'Location fetched successfully';
-  //     });
-  //   } catch (e) {
-  //     setState(() {
-  //       locationMessage = 'Error fetching location: $e';
-  //     });
-  //   }
-  // }
-
-  void _getCurrentLocation() async {
-    try {
-      Geolocator.getPositionStream().listen((Position position) {
-        setState(() {
-          currentLocation = LatLng(position.latitude, position.longitude);
-          _updateBusLocationInFirestore(position);
-        });
-        _mapController.animateCamera(
-          CameraUpdate.newLatLng(currentLocation),
-        );
-      });
-    } catch (e) {
-      setState(() {
-        locationMessage = 'Error fetching location: $e';
-      });
-    }
-  }
-
-  void _updateBusLocationInFirestore(Position position) async {
-    FirebaseFirestore.instance.collection('buses').doc(widget.userId).update({
-      'currentLocation': GeoPoint(position.latitude, position.longitude),
-      'lastUpdated': Timestamp.now(),
-    });
   }
 
   @override
@@ -257,9 +201,12 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                 onPressed: () {
                   setState(() {
                     locationEnabled = !locationEnabled;
+                    bus.locationEnable = locationEnabled;
                     _enableDisableLocation(locationEnabled);
-                    if (locationEnabled) {
-                      _getCurrentLocation();
+                    if (locationEnabled == true) {
+                      MyFirebaseService.startTracking();
+                    } else {
+                      MyFirebaseService.stopTracking();
                     }
                   });
                 },
@@ -278,13 +225,13 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
               Get.to(() => DriverMapScreen(
                     bus: bus,
                     currentLocation: currentLocation,
-                    userId: widget.userId,
+                    userId: getCurrentUserId().toString(),
                   ));
             },
           ),
           const SizedBox(height: 20),
           Text(
-              'Current Location: ${currentLocation!.latitude}, ${currentLocation!.longitude}'),
+              'Current Location: ${currentLocation.latitude}, ${currentLocation.longitude}'),
           if (busLocation != null)
             Text(
                 'Bus Location: ${busLocation!.latitude}, ${busLocation!.longitude}'),

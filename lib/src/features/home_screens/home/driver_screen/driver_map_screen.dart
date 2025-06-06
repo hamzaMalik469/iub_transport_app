@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -188,8 +190,8 @@ class _MapScreenState extends State<DriverMapScreen> {
         initialCameraPosition: CameraPosition(
           target: widget.currentLocation ??
               LatLng(
-                widget.bus!.startingPoint!.latitude,
-                widget.bus!.startingPoint!.longitude,
+                bus.startingPoint!.latitude,
+                bus.startingPoint!.longitude,
               ),
           zoom: 14.4746,
         ),

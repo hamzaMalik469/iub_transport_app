@@ -19,7 +19,7 @@ class StatusIdentifier extends StatelessWidget {
             height: 10,
             decoration: BoxDecoration(shape: BoxShape.circle, color: boxColor),
           ),
-          SizedBox(
+          const SizedBox(
             width: 5,
           ),
           Text(text.toUpperCase())

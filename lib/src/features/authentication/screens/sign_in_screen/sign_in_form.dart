@@ -9,7 +9,6 @@ import 'package:transport_app_iub/src/constants/text_strings.dart';
 import 'package:transport_app_iub/src/features/authentication/firebase_authentication/auth_state.dart';
 import 'package:transport_app_iub/src/features/authentication/firebase_authentication/firebase_service.dart';
 import 'package:transport_app_iub/src/features/authentication/screens/forgetPassword/forget_password_option/forget_password_option.dart';
-import 'package:transport_app_iub/src/features/home_screens/home/driver_screen/driver_home_screen.dart';
 import 'package:transport_app_iub/src/features/home_screens/home/user_home_screen/home_screen.dart';
 
 class SignInForm extends StatefulWidget {

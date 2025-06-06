@@ -1,5 +1,3 @@
-// ignore_for_file: unused_field
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -29,7 +27,8 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   final Set<Marker> _markers = {};
-  late GoogleMapController _controller;
+  GoogleMapController? _controller; // Made controller nullable
+
   final Set<Polyline> _polylines = {};
   List<LatLng> polylineCoordinates = [];
   String _locationMessage = "";
@@ -45,8 +44,15 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     super.initState();
-    _getCurrentLocation();
-    trackBusLoc();
+    _getCurrentLocation().then((value) {
+      trackBusLoc();
+      _startListeningToLocationChanges();
+    });
+  }
+
+  void _onMapCreated(GoogleMapController controller) {
+    _controller = controller;
+    // Optionally apply map styles here or other map settings
   }
 
   // Track bus location live from Firebase
@@ -58,7 +64,6 @@ class _MapScreenState extends State<MapScreen> {
           GeoPoint geoPoint = data['live location'];
           setState(() {
             busLoc = LatLng(geoPoint.latitude, geoPoint.longitude);
-            _controller.animateCamera(CameraUpdate.newLatLng(busLoc));
             _updateBusMarker(busLoc);
           });
         }
@@ -67,6 +72,22 @@ class _MapScreenState extends State<MapScreen> {
         debugPrint('Error tracking bus location: $error');
       },
     );
+  }
+
+  // User current location changing listener and update the marker
+  void _startListeningToLocationChanges() {
+    Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 0,
+      ),
+    ).listen((Position position) {
+      setState(() {
+        LatLng userLoc = LatLng(position.latitude, position.longitude);
+        _updateUserMarker(userLoc);
+        currentLocation = LatLng(position.latitude, position.longitude);
+      });
+    });
   }
 
   // Get user current location
@@ -172,42 +193,73 @@ class _MapScreenState extends State<MapScreen> {
     );
     setState(() {}); // Refresh UI with the updated marker
 
-    // Optionally animate camera to new bus location
-    _animateToNewCurrentPosition(location);
+    // Animate camera to the new bus location if the controller is initialized
+    // if (_controller != null) {
+    //   _animateToNewCurrentPosition(location, null);
+    // }
+  }
+
+  // Update the user marker
+  void _updateUserMarker(LatLng location) async {
+    _markers.removeWhere(
+        (marker) => marker.markerId == const MarkerId('current_location'));
+
+    _markers.add(
+      Marker(
+        markerId: const MarkerId('current_location'),
+        position: location,
+        infoWindow: const InfoWindow(title: 'Current Location'),
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+      ),
+    );
+    setState(() {}); // Refresh UI with the updated marker
+
+    // Animate camera to the user's new location if the controller is initialized
+    // if (_controller != null) {
+    //   _animateToNewCurrentPosition(location, null);
+    // }
   }
 
   // Animate camera to the target position
-  Future<void> _animateToNewCurrentPosition(LatLng targetPosition) async {
-    _controller.animateCamera(
-      CameraUpdate.newCameraPosition(
-        CameraPosition(
-          target: targetPosition,
-          zoom: 14.0,
-          tilt: 45.0,
+  Future<void> _animateToNewCurrentPosition(
+      LatLng targetPosition, double? zoomLevel) async {
+    if (_controller != null) {
+      _controller!.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(
+            target: targetPosition,
+            zoom: zoomLevel ?? 18,
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
 
   // Get custom bus marker icon from assets
   Future<BitmapDescriptor> _getCustomMarkerIcon() async {
     return await BitmapDescriptor.asset(
-      const ImageConfiguration(size: Size(48, 48)),
+      const ImageConfiguration(size: Size(35, 35)),
       wellcomeScreenImage, // Ensure this asset path is correct
+    );
+  }
+
+  Future<BitmapDescriptor> _getUserCustomMarkerIcon() async {
+    return await BitmapDescriptor.asset(
+      const ImageConfiguration(size: Size(30, 30)),
+      locationIcon, // Ensure this asset path is correct
     );
   }
 
   // Set current user location marker
   Future<void> _setMyLocMarker() async {
-    final BitmapDescriptor customIcon =
-        BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
+    BitmapDescriptor markerIcon = await _getUserCustomMarkerIcon();
     if (currentLocation != null) {
       _markers.add(
         Marker(
           markerId: const MarkerId('current_location'),
           position: currentLocation!,
           infoWindow: const InfoWindow(title: 'Current Location'),
-          icon: customIcon,
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
         ),
       );
       setState(() {}); // Update UI with the new marker
@@ -225,8 +277,8 @@ class _MapScreenState extends State<MapScreen> {
           if (currentLocation != null) {
             // Animate to the current user location
             _animateToNewCurrentPosition(
-              LatLng(currentLocation!.latitude, currentLocation!.longitude),
-            );
+                LatLng(currentLocation!.latitude, currentLocation!.longitude),
+                18);
             _setMyLocMarker(); // Set marker for current location
           }
         },
@@ -241,20 +293,17 @@ class _MapScreenState extends State<MapScreen> {
           : Stack(
               children: [
                 GoogleMap(
-                  markers: _markers,
-                  mapType: _mapType,
-                  initialCameraPosition:
-                      CameraPosition(target: currentLocation!, zoom: 14.4746),
-                  zoomControlsEnabled: false,
-                  polylines: {
-                    Polyline(
-                        polylineId: const PolylineId('Route'),
-                        points: polylineCoordinates)
-                  },
-                  onMapCreated: (GoogleMapController controller) {
-                    _controller = controller;
-                  },
-                ),
+                    markers: _markers,
+                    mapType: _mapType,
+                    initialCameraPosition:
+                        CameraPosition(target: currentLocation!, zoom: 14.4746),
+                    zoomControlsEnabled: false,
+                    polylines: {
+                      Polyline(
+                          polylineId: const PolylineId('Route'),
+                          points: polylineCoordinates)
+                    },
+                    onMapCreated: _onMapCreated),
                 Positioned(
                   height: mediaQuery.height * 0.1,
                   right: mediaQuery.width * 0.1,
@@ -331,8 +380,9 @@ class _MapScreenState extends State<MapScreen> {
                     ),
                     child: IconButton(
                       onPressed: () {
-                        if (widget.locationEnable == true) {
-                          _animateToNewCurrentPosition(busLoc);
+                        if (widget.locationEnable == true &&
+                            _controller != null) {
+                          _animateToNewCurrentPosition(busLoc, 18);
                         }
                       },
                       icon: const Icon(Icons.directions_bus),
