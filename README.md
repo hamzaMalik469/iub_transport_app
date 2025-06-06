@@ -4,13 +4,15 @@ A new Flutter project.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+## IUB Transport App
 
-A few resources to get you started if this is your first Flutter project:
+This was my first full stack application that i develope.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+# This app is use for live tracking of university buses for students so they can live check their transport bus.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Key points
+   1. Every driver of indiviual bus can register as a Bus in the application.
+   2. Driver can turn OFF/ON bus tracking through mobile app, when it require he/she can turn on tracking.
+   3. Bus live location data starts uploading on third party online dadabase named GOOGLE FIREBASE.a
+   4. Students can regiter themself on the app using their university provided uniqure ID.
+   5. After successfully login to app, students can tracking live location of buses those are online/on route.
