@@ -8,7 +8,7 @@ A new Flutter project.
 
 This was my first full stack application that i developed.
 
-## This app is use for live tracking of university buses for students so they can live check their transport bus.
+## This app is use for live tracking of university buses for students so they can live check their transport bus location.
 
 # Key points:
    1. Every driver of indiviual bus can register as a Bus in the application.
